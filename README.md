@@ -1,4 +1,4 @@
-# nuxt-app-task
+# nuxt-task
 
 > My epic Nuxt.js project
 
