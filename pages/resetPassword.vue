@@ -74,8 +74,9 @@
 </template>
 
 <script>
-import errMessages from '../assets/js/errMessages';
+import errMessages from '../static/js/errMessages';
 export default {
+  name:'ResetPassword',
   data(){
     return {
       form:{
@@ -107,7 +108,7 @@ export default {
     async onSend() {
       this.sending = true;
       try {
-        await this.$axios.$post('http://165.22.199.57/user/resetPassword',this.form)
+        await this.$axios.$post('/user/resetPassword',this.form)
         this.sending = false;
         this.$store.dispatch("setAlert", {text:"Password successfully reset",type:'success'});
       } catch (err) {

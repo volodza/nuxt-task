@@ -1,30 +1,19 @@
 <template>
   <div>
     <Navbar />
-    <div style="max-width:700px" class="container">
+    <div class="container">
       <nuxt />
     </div>
     
-    <!-- error alert -->
+    <!-- alert -->
     <div 
       class="alert alert-dismissible"
       :class="`alert-${alertMessage.type}`" 
-      style="position: fixed; bottom: 0px; width: 100%; margin-bottom: 0px;"
       v-if="showAlert"
     >
       <button @click="closeAlert" type="button" aria-label="Close" class="close">×</button>
       <p class="text-center">{{ alertMessage.text }}</p>
     </div>
-
-    <!-- success alert -->
-    <!-- <div 
-      class="alert alert-dismissible alert-success" 
-      style="position: fixed; bottom: 0px; width: 100%; margin-bottom: 0px;"
-      v-if="showSuccess"
-    >
-      <button @click="closeSuccess" type="button" aria-label="Close" class="close">×</button>
-      <p class="text-center">{{ success }}</p>
-    </div> -->
   </div>
 </template>
 
@@ -35,23 +24,9 @@ export default {
     Navbar
   },
   data() {
-    return {
-       
-    }
+    return {}
   },
   computed:{
-    // error() {
-    //   return this.$store.getters.error;
-    // },
-    // showError(){
-    //   return !!this.error
-    // },
-    // success() {
-    //   return this.$store.getters.success;
-    // },
-    // showSuccess(){
-    //   return !!this.success
-    // }
     alertMessage () {
       return this.$store.getters.alert
     },
@@ -60,20 +35,9 @@ export default {
     }
   },
   methods: {
-    // closeError() {
-    //   this.$store.dispatch("clearError");
-    // },
-    // closeSuccess() {
-    //   this.$store.dispatch("clearSuccess");
-    // }
     closeAlert() {
       this.$store.dispatch('clearAlert')
     }
-  },
-  watch: {
-    // error(val){
-    //   if (val!==null) setTimeout(this.$store.dispatch('clearError'),5000)
-    // }
   },
 }
 </script>
@@ -91,6 +55,10 @@ html {
   box-sizing: border-box;
 }
 
+.container{
+  max-width:700px;
+}
+
 *,
 *:before,
 *:after {
@@ -98,32 +66,10 @@ html {
   margin: 0;
 }
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+.alert {
+  position: fixed; 
+  bottom: 0px;
+  width: 100%; 
+  margin-bottom: 0px;
 }
 </style>

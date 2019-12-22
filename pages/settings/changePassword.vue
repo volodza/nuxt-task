@@ -67,8 +67,10 @@
 </template>
 
 <script>
+import errMessages from '../../static/js/errMessages';
 export default {
   middleware:'auth',
+  name:'ChangePassword',
   data(){
     return {
       form:{
@@ -102,13 +104,14 @@ export default {
       const token = this.$store.getters.token;
 
       try {
-        await this.$axios.$post('http://165.22.199.57/user/changePassword',{...this.form,token})
+        await this.$axios.$post('/user/changePassword',{...this.form,token})
         this.sending = false;
         this.$store.dispatch("setAlert", {text:'Password changed successfully',type:'success'});
         this.$router.push('/settings')
-      } catch (e) {
+      } catch (err) {
         this.sending = false;
-        this.$store.dispatch("setAlert", {text:e,type:'danger'});
+        const errCode = err.response.status;
+        this.$store.dispatch("setAlert", {text:errMessages[errCode],type:'danger'});
       }
     },
   }

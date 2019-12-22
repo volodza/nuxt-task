@@ -55,7 +55,6 @@ module.exports = {
   axios: {
     credentials: false,
     baseURL: process.env.BASE_URL || 'localhost:3000',
-
   },
   /*
   ** Build configuration
@@ -77,14 +76,9 @@ module.exports = {
       secret: 'super-secret-key',
       resave: false,
       saveUninitialized: false,
-      cookie: { maxAge: 600000 }
+      cookie: { maxAge: 1000*60*60 }
     }),
     // Api middleware
-    // We add /api/login & /api/logout routes
     '~/api/index.js'
   ],
-  // server:{
-  //   port:3000
-  // }
-
 }

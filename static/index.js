@@ -39,18 +39,18 @@ export const getters  = {
 }
 
 export const mutations = {
-  SET_USER (state, payload) {
+  setUser (state, payload) {
     state.authUser = payload;
     state.isLogged = true;
   },
-  SET_PROPERTIES (state,payload){
+  setProperties (state,payload){
     state.properties = {
       username: payload.username,
       sponsor: payload.sponsor.username,
       email: payload.email,
       firstName: payload.firstName,
       secondName: payload.secondName,
-      birthday: payload.birthday.slice(0,10) || '',
+      birthday: payload.birthday ? payload.birthday.slice(0,10) : '' ,
       phoneNumber: payload.phoneNumber,
       phoneNumber2: payload.phoneNumber2,
       skype: payload.skype,
@@ -73,10 +73,10 @@ export const mutations = {
     };
     state.authUser.username = payload.username
   },
-  SET_PARTNERS (state, payload){
+  setPartners (state, payload){
     state.partners = payload;
   },
-  LOGOUT (state) {
+  logout (state) {
     state.authUser = null,
     state.isLogged = false,
     state.properties = null,
@@ -109,7 +109,7 @@ export const actions = {
     if (req.session && req.session.username && req.session.token) {
       let username = req.session.username;
       let token = req.session.token
-      commit('SET_USER', {username,token})
+      commit('setUser', {username,token})
       // console.log()
     }
   },
@@ -117,15 +117,15 @@ export const actions = {
   async register({commit},form) {
     let {username} = JSON.parse(form)
     try {
-      const res = await this.$axios.$post('http://165.22.199.57/user',form, {
+      const res = await this.$axios.$post('/user',form, {
         headers: {
           'Content-Type': 'application/json',
         }
       })
       let token = res.token
-      const sessionPromise = this.$axios.$post('/api/login',{username,token})
+      const sessionPromise = this.$axios.$post(process.env.PROD_API + '/api/login',{username,token})
       const [session] = await Promise.all([sessionPromise])
-      commit('LOGIN', {username,token})
+      commit('setUser', {username,token})
       console.log(session)
     } catch (error) {
       throw error
@@ -134,13 +134,13 @@ export const actions = {
 
   async login({commit}, {username, password}) {
     try {
-      const res = await this.$axios.$get('http://165.22.199.57/auth', {
+      const res = await this.$axios.$get(process.env.BASE_URL + '/auth', {
         params: {username , password}
       })
       let token = res.token
-      const sessionPromise = this.$axios.$post('/api/login',{username,token})
+      const sessionPromise = this.$axios.$post(process.env.PROD_API + '/api/login',{username,token})
       const [session] = await Promise.all([sessionPromise])
-      commit('SET_USER', {username,token})
+      commit('setUser', {username,token})
       console.log(session)
     } catch (error) {
       throw error
@@ -148,18 +148,18 @@ export const actions = {
   },
 
   async logout ({ commit }) {
-    await this.$axios.$get('/api/logout').then((res) => {
-      commit('LOGOUT')
+    await this.$axios.$get(process.env.PROD_API + '/api/logout').then((res) => {
+      commit('logout')
       console.log(res)
     })
   },
 
   async getUserProps ({commit}, token){
     try {
-      const props = await this.$axios.$get('http://165.22.199.57/user', {
+      const props = await this.$axios.$get('/user', {
         params: { token }
       })
-      commit('SET_PROPERTIES', props)
+      commit('setProperties', props)
     } catch (error) {
       throw error
     }
@@ -167,8 +167,8 @@ export const actions = {
 
   async updateUserProps ({commit}, {token , items} ){
     try {
-      const props = await this.$axios.$put('http://165.22.199.57/user', { token, ...items })
-      commit('SET_PROPERTIES', props)
+      const props = await this.$axios.$put('/user', { token, ...items })
+      commit('setProperties', props)
     } catch (error) {
       throw error
     }

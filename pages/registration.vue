@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import errMessages from '../../assets/js/errMessages';
+import errMessages from '../static/js/errMessages';
   export default {
     name:'Registration',
     data() {

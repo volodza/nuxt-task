@@ -37,7 +37,7 @@ export default {
         email: payload.email,
         firstName: payload.firstName,
         secondName: payload.secondName,
-        birthday: payload.birthday.slice(0,10) || '',
+        birthday: payload.birthday ? payload.birthday.slice(0,10) : '',
         phoneNumber: payload.phoneNumber,
         phoneNumber2: payload.phoneNumber2,
         skype: payload.skype,
@@ -58,7 +58,7 @@ export default {
         showMobile: payload.settings.showMobile,
         autoExtensionBS: payload.settings.autoExtensionBS
       };
-      state.authUser.username = payload.username
+      state.authUser.username = payload.username;
     },
     setPartners (state, payload){
       state.partners = payload;
@@ -85,13 +85,13 @@ export default {
     async register({commit},form) {
       let {username} = JSON.parse(form)
       try {
-        const res = await this.$axios.$post('http://165.22.199.57/user',form, {
+        const res = await this.$axios.$post('/user',form, {
           headers: {
             'Content-Type': 'application/json',
           }
         })
         let token = res.token
-        const sessionPromise = this.$axios.$post('/api/login',{username,token})
+        const sessionPromise = this.$axios.$post(process.env.DEV_API + '/api/login',{username,token})
         const [session] = await Promise.all([sessionPromise])
         commit('login', {username,token})
         console.log(session)
@@ -102,11 +102,11 @@ export default {
 
     async login({commit}, {username, password}) {
       try {
-        const res = await this.$axios.$get('http://165.22.199.57/auth', {
+        const res = await this.$axios.$get('/auth', {
           params: {username , password}
         })
         let token = res.token
-        const sessionPromise = this.$axios.$post('/api/login',{username,token})
+        const sessionPromise = this.$axios.$post(process.env.DEV_API + '/api/login',{username,token})
         const [session] = await Promise.all([sessionPromise])
         commit('setUser', {username,token})
         console.log(session)
@@ -116,7 +116,7 @@ export default {
     },
 
     async logout ({ commit }) {
-      await this.$axios.$get('/api/logout').then((res) => {
+      await this.$axios.$get(process.env.DEV_API + '/api/logout').then((res) => {
         commit('logout')
         console.log(res)
       })
@@ -124,7 +124,7 @@ export default {
 
     async getUserProps ({commit}, token){
       try {
-        const props = await this.$axios.$get('http://165.22.199.57/user', {
+        const props = await this.$axios.$get('/user', {
           params: { token }
         })
         commit('setProperties', props)
@@ -135,12 +135,11 @@ export default {
 
     async updateUserProps ({commit}, {token , items} ){
       try {
-        const props = await this.$axios.$put('http://165.22.199.57/user', { token, ...items })
+        const props = await this.$axios.$put('/user', { token, ...items })
         commit('setProperties', props)
       } catch (error) {
         throw error
       }
     },
   },
-  
 }
